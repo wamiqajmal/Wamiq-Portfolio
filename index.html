@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wamiq Ajmal | Mechanical Engineering Portfolio</title>
+    
+    <!-- React & ReactDOM (via CDN) -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    
+    <!-- Babel for JSX in-browser compilation -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Three.js for 2D Canvas Animation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+        /* Mechanical / Blueprint Theme Variables */
+        :root {
+            --bg-color: #060b19;
+            --panel-bg: rgba(13, 22, 45, 0.85);
+            --border-color: #1e3a8a;
+            --accent-main: #38bdf8;
+            --accent-secondary: #818cf8;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --font-mono: 'Courier New', Courier, monospace;
+            --font-sans: system-ui, -apple-system, sans-serif;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            overflow: hidden; /* Let React handle scroll in panels */
+        }
+
+        #three-canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+        }
+
+        /* React App Container */
+        #root {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Responsive Layout */
+        .app-container {
+            display: flex;
+            flex-direction: row;
+            height: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            gap: 20px;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 250px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(10px);
+            flex-shrink: 0;
+        }
+
+        .profile-header h1 {
+            font-family: var(--font-mono);
+            font-size: 1.5rem;
+            color: var(--accent-main);
+            margin: 0 0 10px 0;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .profile-header p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-main);
+            text-align: left;
+            padding: 10px 15px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: rgba(56, 189, 248, 0.1);
+            border-color: var(--accent-main);
+        }
+
+        .nav-btn.active {
+            background: rgba(56, 189, 248, 0.2);
+            border-color: var(--accent-main);
+            color: var(--accent-main);
+            border-left: 4px solid var(--accent-main);
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex-grow: 1;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            overflow-y: auto;
+        }
+
+        .main-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        .main-content::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        /* Content Typorgaphy & Components */
+        .section-title {
+            font-family: var(--font-mono);
+            color: var(--accent-secondary);
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 6px;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-main);
+        }
+
+        .card h3 {
+            margin: 0 0 10px 0;
+            color: var(--accent-main);
+            font-size: 1.1rem;
+        }
+
+        .card-meta {
+            font-size: 0.8rem;
+            color: var(--accent-secondary);
+            margin-bottom: 10px;
+            font-family: var(--font-mono);
+        }
+
+        .tech-tag {
+            display: inline-block;
+            background: rgba(56, 189, 248, 0.15);
+            border: 1px solid var(--accent-main);
+            color: var(--accent-main);
+            padding: 2px 8px;
+            font-size: 0.75rem;
+            border-radius: 12px;
+            margin: 2px;
+            font-family: var(--font-mono);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            font-family: var(--font-mono);
+            color: var(--accent-main);
+            font-weight: normal;
+        }
+
+        a {
+            color: var(--accent-main);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 800px) {
+            .app-container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                flex-direction: row;
+                flex-wrap: wrap;
+                box-sizing: border-box;
+                padding: 10px;
+            }
+            .profile-header {
+                width: 100%;
+            }
+            .nav-btn {
+                flex-grow: 1;
+                text-align: center;
+                border-left: 1px solid transparent !important;
+                border-bottom: 4px solid transparent;
+            }
+            .nav-btn.active {
+                border-bottom: 4px solid var(--accent-main) !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Three.js Canvas Container -->
+    <div id="three-canvas-container"></div>
+
+    <!-- React Root -->
+    <div id="root"></div>
+
+    <!-- Three.js 2D Blueprint Animation Script -->
+    <script>
+        const initThreeJS = () => {
+            const container = document.getElementById('three-canvas-container');
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color('#060b19');
+
+            // 2D Orthographic Camera for flat technical look
+            const aspect = window.innerWidth / window.innerHeight;
+            const camera = new THREE.OrthographicCamera(-aspect * 10, aspect * 10, 10, -10, 0.1, 100);
+            camera.position.z = 10;
+
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            container.appendChild(renderer.domElement);
+
+            // Create Blueprint Grid
+            const gridMaterial = new THREE.LineBasicMaterial({ color: '#1e3a8a', transparent: true, opacity: 0.4 });
+            const gridGroup = new THREE.Group();
+
+            const gridSize = 40;
+            const step = 1;
+
+            for (let i = -gridSize; i <= gridSize; i += step) {
+                // Verticals
+                let vGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(i, -gridSize, 0), new THREE.Vector3(i, gridSize, 0)]);
+                gridGroup.add(new THREE.Line(vGeo, gridMaterial));
+                // Horizontals
+                let hGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-gridSize, i, 0), new THREE.Vector3(gridSize, i, 0)]);
+                gridGroup.add(new THREE.Line(hGeo, gridMaterial));
+            }
+            scene.add(gridGroup);
+
+            // Animation Loop (Slow panning to simulate active drafting board)
+            const animate = () => {
+                requestAnimationFrame(animate);
+                gridGroup.position.x = (gridGroup.position.x - 0.005) % step;
+                gridGroup.position.y = (gridGroup.position.y - 0.005) % step;
+                renderer.render(scene, camera);
+            };
+
+            animate();
+
+            // Handle Resize
+            window.addEventListener('resize', () => {
+                const aspect = window.innerWidth / window.innerHeight;
+                camera.left = -aspect * 10;
+                camera.right = aspect * 10;
+                camera.top = 10;
+                camera.bottom = -10;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        };
+        initThreeJS();
+    </script>
+
+    <!-- React Application Script (JSX compiled in-browser) -->
+    <script type="text/babel">
+        const { useState } = React;
+
+        // --- Data Models based on Wamiq_Ajmal_CV.pdf ---
+        
+        const experienceData = [
+            {
+                role: "Mechanical Engineering Intern",
+                company: "PCSIR Laboratory Complex, Peshawar",
+                period: "Jun 2026 - Present",
+                desc: "Supported CNC machining, surface grinding, precision measurement, and engineering documentation[cite: 1]. Assisted with G-code generation and dry-run verification[cite: 1]."
+            },
+            {
+                role: "Mechanical Intern",
+                company: "Marks Razmak Industry, Peshawar",
+                period: "Jan 2026 - Jun 2026",
+                desc: "Worked on fabrication and machining of industrial components from 2D technical drawings[cite: 1]. Operated CNC machinery and supported precision machining[cite: 1]."
+            },
+            {
+                role: "Technician",
+                company: "Kia Motor Khyber",
+                period: "Mar 2024 - Jan 2025",
+                desc: "Conducted mechanical diagnostics, warranty check-ups, parts management, and job-card documentation[cite: 1]."
+            },
+            {
+                role: "IT Assistant",
+                company: "The City School",
+                period: "Aug 2021 - Aug 2022",
+                desc: "Maintained hardware inventory and technical documentation[cite: 1]."
+            }
+        ];
+
+        const portfolioData = {
+            solidworks: [
+                {
+                    title: "Portable Metal Cutting Machine (PMCM)",
+                    meta: "Final Year Project | 3D Assembly",
+                    desc: "Designed and developed a portable cutting unit; created 3D assemblies in SolidWorks, managed welding/assembly fabrication[cite: 1]."
+                },
+                {
+                    title: "Industrial Components Modeling",
+                    meta: "Marks Razmak Industry",
+                    desc: "Drafting and modeling industrial components derived directly from 2D technical drawings for precision manufacturing[cite: 1]."
+                }
+            ],
+            programming: [
+                {
+                    title: "CNC Machining & G-Code Generation",
+                    meta: "PCSIR & Marks Razmak",
+                    desc: "Observation and generation of G-code fundamentals for CNC operations, parameter selection, and dry-run verification protocols[cite: 1]."
+                },
+                {
+                    title: "Network & Router Configuration",
+                    meta: "IT Operations Support",
+                    desc: "Hardware documentation and network router configuration to support organizational technical operations[cite: 1]."
+                }
+            ],
+            other: [
+                {
+                    title: "Vehicle Electrical Upgrade",
+                    meta: "Automotive Maintenance",
+                    desc: "Engineered and executed headlight reconfigurations and custom LED wiring systems for a 1998 Suzuki Margalla."
+                },
+                {
+                    title: "Industrial Training Log",
+                    meta: "Process Documentation",
+                    desc: "Authored comprehensive technical documentation detailing conventional lathe operations and CNC vertical machining center tasks."
+                },
+                {
+                    title: "Precision Surface Grinding",
+                    meta: "Manufacturing Protocol",
+                    desc: "Performed flat-surface grinding, wheel dressing, and verified flatness using advanced precision measuring instruments[cite: 1]."
+                }
+            ]
+        };
+
+        const certsAndEducation = {
+            education: [
+                { degree: "B.Sc. Mechanical Engineering Technology", inst: "University of Engineering & Technology, Peshawar", year: "2022 - Oct 2026", details: "GPA: 3.81[cite: 1]." },
+                { degree: "DAE (PMIT)", inst: "Precision System Training Center, Peshawar", year: "2019 - 2021", details: "Precision engineering fundamentals[cite: 1]." },
+                { degree: "Diploma in Information Technology (DIT)", inst: "Precision System Training Center, Peshawar", year: "2019 - 2020", details: "IT Systems and support[cite: 1]." }
+            ],
+            certifications: [
+                "HSE Training Course (2023)[cite: 1]",
+                "Dies & Molding Skilled Worker Short Course (2019)[cite: 1]"
+            ]
+        };
+
+        // --- React Components ---
+
+        const Home = () => (
+            <div>
+                <h2 className="section-title">&gt; SYSTEM.OVERVIEW</h2>
+                <p><strong>Wamiq Ajmal</strong> is a Mechanical Engineering Technology professional specializing in CAD, CNC machining, and technical operations[cite: 1].</p>
+                <p>With a 3.81 GPA and hands-on experience spanning precision manufacturing, metal fabrication, and vehicle diagnostics, I bridge the gap between digital design (SolidWorks, Creo) and physical manufacturing (G-code, surface grinding)[cite: 1].</p>
+                
+                <h3 style={{marginTop: '30px', color: 'var(--accent-main)'}}>Core Competencies:</h3>
+                <div style={{display: 'flex', flexWrap: 'wrap', gap: '10px'}}>
+                    {['SolidWorks (2D/3D)', 'Creo Parametric', 'CNC Operation', 'Precision Machining', 'Metal Fabrication', 'G-code Fundamentals', 'Quality Control', 'Vehicle Diagnostics'].map(skill => (
+                        <span key={skill} className="tech-tag">{skill}</span>
+                    ))}
+                </div>
+            </div>
+        );
+
+        const About = () => (
+            <div>
+                <h2 className="section-title">&gt; PROFESSIONAL.EXPERIENCE</h2>
+                <div className="grid-container">
+                    {experienceData.map((exp, idx) => (
+                        <div key={idx} className="card">
+                            <h3>{exp.role}</h3>
+                            <div className="card-meta">{exp.company} | {exp.period}</div>
+                            <p style={{fontSize: '0.9rem', color: 'var(--text-muted)'}}>{exp.desc}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+
+        const Portfolio = () => (
+            <div>
+                <h2 className="section-title">&gt; PROJECT.DATABASE</h2>
+                
+                <h3 style={{color: 'var(--accent-secondary)'}}>// SolidWorks & CAD Models</h3>
+                <div className="grid-container">
+                    {portfolioData.solidworks.map((item, idx) => (
+                        <div key={idx} className="card">
+                            <h3>{item.title}</h3>
+                            <div className="card-meta">{item.meta}</div>
+                            <p style={{fontSize: '0.9rem'}}>{item.desc}</p>
+                        </div>
+                    ))}
+                </div>
+
+                <h3 style={{color: 'var(--accent-secondary)', marginTop: '40px'}}>// Programming & IT Configurations</h3>
+                <div className="grid-container">
+                    {portfolioData.programming.map((item, idx) => (
+                        <div key={idx} className="card">
+                            <h3>{item.title}</h3>
+                            <div className="card-meta">{item.meta}</div>
+                            <p style={{fontSize: '0.9rem'}}>{item.desc}</p>
+                        </div>
+                    ))}
+                </div>
+
+                <h3 style={{color: 'var(--accent-secondary)', marginTop: '40px'}}>// Mechanical & Automotive Projects</h3>
+                <div className="grid-container">
+                    {portfolioData.other.map((item, idx) => (
+                        <div key={idx} className="card">
+                            <h3>{item.title}</h3>
+                            <div className="card-meta">{item.meta}</div>
+                            <p style={{fontSize: '0.9rem'}}>{item.desc}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+
+        const CertsCourses = () => (
+            <div>
+                <h2 className="section-title">&gt; ACADEMICS_AND_CERTIFICATIONS</h2>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Degree / Program</th>
+                            <th>Institution</th>
+                            <th>Timeline</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {certsAndEducation.education.map((edu, idx) => (
+                            <tr key={idx}>
+                                <td><strong>{edu.degree}</strong></td>
+                                <td>{edu.inst}</td>
+                                <td>{edu.year}</td>
+                                <td>{edu.details}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+
+                <h3 style={{color: 'var(--accent-secondary)', marginTop: '30px'}}>// Certifications</h3>
+                <ul>
+                    {certsAndEducation.certifications.map((cert, idx) => (
+                        <li key={idx} style={{marginBottom: '10px'}}>{cert}</li>
+                    ))}
+                </ul>
+            </div>
+        );
+
+        const Contact = () => (
+            <div>
+                <h2 className="section-title">&gt; COMM_LINK.ESTABLISH</h2>
+                <div className="card" style={{maxWidth: '500px', marginTop: '20px'}}>
+                    <h3>Contact Information</h3>
+                    <p style={{fontFamily: 'var(--font-mono)'}}>
+                        <strong style={{color: 'var(--accent-secondary)'}}>LOC:</strong> Peshawar, Pakistan[cite: 1]<br/><br/>
+                        <strong style={{color: 'var(--accent-secondary)'}}>TEL:</strong> 03024233318[cite: 1]<br/><br/>
+                        <strong style={{color: 'var(--accent-secondary)'}}>EML:</strong> <a href="mailto:engrwamiqajmal@gmail.com">engrwamiqajmal@gmail.com</a>[cite: 1]<br/><br/>
+                        <strong style={{color: 'var(--accent-secondary)'}}>LNK:</strong> <a href="https://linkedin.com/in/engrwamiqajmal" target="_blank">linkedin.com/in/engrwamiqajmal</a>[cite: 1]<br/><br/>
+                        <strong style={{color: 'var(--accent-secondary)'}}>URL:</strong> <a href="https://tinyurl.com/2wd8nvdt" target="_blank">tinyurl.com/2wd8nvdt</a>[cite: 1]
+                    </p>
+                </div>
+            </div>
+        );
+
+        // --- Main App Component ---
+        const App = () => {
+            const [activeTab, setActiveTab] = useState('home');
+
+            const renderContent = () => {
+                switch(activeTab) {
+                    case 'home': return <Home />;
+                    case 'about': return <About />;
+                    case 'portfolio': return <Portfolio />;
+                    case 'certs': return <CertsCourses />;
+                    case 'contact': return <Contact />;
+                    default: return <Home />;
+                }
+            };
+
+            return (
+                <div className="app-container">
+                    <nav className="sidebar">
+                        <div className="profile-header">
+                            <h1>WAMIQ AJMAL</h1>
+                            <p>Mechanical Engineer Technology | CAD | CNC & Manufacturing[cite: 1]</p>
+                        </div>
+                        <button className={`nav-btn ${activeTab === 'home' ? 'active' : ''}`} onClick={() => setActiveTab('home')}>01. HOME</button>
+                        <button className={`nav-btn ${activeTab === 'about' ? 'active' : ''}`} onClick={() => setActiveTab('about')}>02. EXPERIENCE</button>
+                        <button className={`nav-btn ${activeTab === 'portfolio' ? 'active' : ''}`} onClick={() => setActiveTab('portfolio')}>03. PORTFOLIO</button>
+                        <button className={`nav-btn ${activeTab === 'certs' ? 'active' : ''}`} onClick={() => setActiveTab('certs')}>04. ACADEMICS</button>
+                        <button className={`nav-btn ${activeTab === 'contact' ? 'active' : ''}`} onClick={() => setActiveTab('contact')}>05. CONTACT</button>
+                    </nav>
+                    <main className="main-content">
+                        {renderContent()}
+                    </main>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

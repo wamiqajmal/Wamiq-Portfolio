@@ -1,86 +1,171 @@
-# ⚙️ Wamiq Ajmal | Interactive Engineering Portfolio
+# ⚙️ Wamiq Ajmal — Mechanical Engineering Portfolio
 
-An interactive personal portfolio website designed for **Wamiq Ajmal**, a Mechanical Engineering Technology professional.
+<p align="center">
+  <img src="profile.jpg" alt="Wamiq Ajmal" width="120" style="border-radius:50%;">
+</p>
 
-The website presents professional experience, engineering projects, technical skills, contact information, and a downloadable CV through a modern **engineering-terminal inspired interface**.
+<h2 align="center">Interactive Mechanical Engineering Technology Portfolio</h2>
 
----
+<p align="center">
+  <b>CAD • CNC Machining • Manufacturing • Fabrication • Engineering Projects</b>
+</p>
 
-## 🚀 Live Portfolio
-
-🌐 **Live Demo:**  
-Add your GitHub Pages URL here after deployment.
-
----
-
-## 👨‍💻 About
-
-This portfolio showcases my academic background, industrial experience, engineering projects, and technical skills in Mechanical Engineering Technology.
-
-### Professional Focus
-
-- Mechanical Engineering Technology
-- CNC Machining
-- CNC Programming & G-Code
-- CAD Design
-- SolidWorks
-- Creo Parametric
-- Precision Machining
-- Metal Fabrication
-- Engineering Documentation
-- Vehicle Diagnostics
+<p align="center">
+  <a href="https://wamiqajmal.github.io/Wamiq-Portfolio/">🌐 Live Portfolio</a>
+  ·
+  <a href="https://linkedin.com/in/engrwamiqajmal">LinkedIn</a>
+  ·
+  <a href="assets/Wamiq_Ajmal_CV.pdf">📄 Resume</a>
+</p>
 
 ---
 
-## 🛠️ Technologies Used
+## 📌 About the Project
+
+This repository contains my personal engineering portfolio website, created to present my academic background, industrial experience, technical skills, engineering projects, and professional contact information in a modern interactive interface.
+
+The portfolio is designed around a **technical engineering / digital-control-room aesthetic**, combining a clean professional layout with animated visual elements.
+
+---
+
+## 🌐 Live Website
+
+**Portfolio:**  
+https://wamiqajmal.github.io/Wamiq-Portfolio/
+
+---
+
+# ✨ Features
+
+- Modern dark engineering-inspired interface
+- Responsive design for desktop, tablet, and mobile
+- Interactive Three.js background
+- Professional profile section
+- Engineering experience timeline
+- Featured project cards
+- Technical skills section
+- Contact and LinkedIn information
+- Direct CV / Resume access
+- Smooth scrolling and section navigation
+- Mobile navigation menu
+- Reduced-motion support for accessibility
+
+---
+
+# 🖥️ Portfolio Screenshots
+
+Add your screenshots in a dedicated folder such as:
+
+```text
+assets/
+└── screenshots/
+    ├── home.png
+    ├── experience.png
+    ├── projects.png
+    ├── skills.png
+    └── contact.png
+```
+
+Then place the screenshots in this section of the README:
+
+## Home / Overview
+
+![Portfolio Home](assets/screenshots/home.png)
+
+## Experience
+
+![Professional Experience](assets/screenshots/experience.png)
+
+## Projects
+
+![Engineering Projects](assets/screenshots/projects.png)
+
+## Technical Skills
+
+![Technical Skills](assets/screenshots/skills.png)
+
+## Contact
+
+![Contact Section](assets/screenshots/contact.png)
+
+> **Tip:** For the best GitHub presentation, use clear screenshots at approximately 1440×900 or 1920×1080.
+
+---
+
+# 🛠️ Technologies Used
 
 | Technology | Purpose |
 |---|---|
-| HTML5 | Website structure |
-| CSS3 | Styling and responsive layout |
-| React 18 | Interactive user interface |
-| Babel | JSX compilation |
-| Three.js | Interactive engineering background |
+| HTML5 | Page structure |
+| CSS3 | UI design, responsiveness and animations |
+| JavaScript | Interactive functionality |
+| Three.js | Animated engineering-style background |
 | Google Fonts | Typography |
-
-The project loads React, ReactDOM, Babel, and Three.js through CDN resources. :contentReference[oaicite:2]{index=2}
-
----
-
-## ✨ Features
-
-### 🖥️ Interactive Engineering Interface
-
-- Engineering-themed dark UI
-- Animated background grid
-- Rotating gear graphics
-- Mouse-responsive background
-- Terminal-style professional profile
-- Responsive layout for smaller screens
-
-The Three.js background contains an interactive grid and rotating gear elements that respond to mouse movement. :contentReference[oaicite:3]{index=3}
-
-### 📋 Portfolio Sections
-
-The website contains:
-
-1. **System Overview**
-2. **Professional Experience**
-3. **Projects**
-4. **Contact**
-5. **Download Resume**
-
-These sections are implemented as interactive React components. :contentReference[oaicite:4]{index=4}
+| GitHub Pages | Website deployment |
 
 ---
 
-## 💼 Experience
+# 📂 Project Structure
+
+```text
+Wamiq-Portfolio/
+│
+├── index.html
+├── profile.jpg
+├── README.md
+├── html_backup.txt
+│
+└── assets/
+    ├── Wamiq_Ajmal_CV.pdf
+    ├── profile.jpg
+    │
+    ├── 3D_Models/
+    │   └── README.md
+    │
+    ├── certifications/
+    │   └── README.md
+    │
+    └── screenshots/
+        ├── home.png
+        ├── experience.png
+        ├── projects.png
+        ├── skills.png
+        └── contact.png
+```
+
+> The `screenshots/` folder is optional. Create it when you are ready to add screenshots to this README.
+
+---
+
+# 🎓 Professional Profile
+
+### Education
+
+**B.Sc. Mechanical Engineering Technology**  
+UET Peshawar
+
+**GPA:** 3.81 / 4.00
+
+### Engineering Interests
+
+- Mechanical Design
+- CNC Machining
+- Precision Manufacturing
+- CAD / 3D Modeling
+- Fabrication
+- Engineering Documentation
+- Industrial Maintenance
+- Manufacturing Processes
+
+---
+
+# 💼 Professional Experience
 
 ### Mechanical Engineering Intern
 **PCSIR Laboratory Complex**  
-June 2026 – Present
+**June 2026 – Present**
 
-Experience includes:
+Exposure to:
 
 - CNC machining
 - Surface grinding
@@ -92,21 +177,21 @@ Experience includes:
 
 ### Mechanical Intern
 **Marks Razmak Industry**  
-January 2026 – June 2026
+**January 2026 – June 2026**
 
-Experience includes:
+Worked with:
 
 - Industrial component fabrication
-- Machining
+- Machining operations
 - CNC machinery
 - 2D technical drawings
 - Precision manufacturing
 
 ### Technician
 **Kia Motor Khyber**  
-March 2024 – January 2025
+**March 2024 – January 2025**
 
-Experience includes:
+Experience in:
 
 - Mechanical diagnostics
 - Vehicle troubleshooting
@@ -114,38 +199,128 @@ Experience includes:
 - Parts management
 - Job-card documentation
 
-The experience information is displayed directly in the portfolio's operational history section. :contentReference[oaicite:5]{index=5}
-
 ---
 
-## 🔧 Projects
+# 🔧 Featured Projects
 
-### Portable Metal Cutting Machine
+## 1. Portable Metal Cutting Machine
 
-Final Year Project focused on designing and developing a portable metal cutting unit.
+Final Year Project focused on the design and development of a portable cutting unit.
 
-**Key work:**
+### Key Work
 
-- 3D assembly design
-- SolidWorks modeling
-- Welding
+- Mechanical design
+- SolidWorks 3D assemblies
+- Welding and fabrication
 - Mechanical assembly
-- Fabrication
-
-### Industrial Components Modeling
-
-Industrial components modeled from 2D technical drawings for precision manufacturing.
-
-Project information is presented in the portfolio's schematic/project database. :contentReference[oaicite:6]{index=6}
+- Prototype development
+- Performance validation
 
 ---
 
-## 🎯 Technical Skills
+## 2. Industrial Components Modeling
+
+Modeling and drafting of industrial components derived from 2D technical drawings for manufacturing applications.
+
+### Key Areas
+
+- Technical drawing interpretation
+- CAD modeling
+- Component development
+- Manufacturing-oriented design
+- Precision requirements
+
+---
+
+# 🧰 Technical Skills
+
+### CAD & Design
+- SolidWorks
+- Creo Parametric
+- 2D Technical Drawing
+- 3D Mechanical Modeling
+- Assembly Design
+
+### Manufacturing
+- CNC Machining
+- CNC Programming Fundamentals
+- G-Code
+- Surface Grinding
+- Precision Machining
+- Metal Fabrication
+
+### Engineering
+- Technical Documentation
+- Precision Measurement
+- Manufacturing Processes
+- Mechanical Troubleshooting
+- Vehicle Diagnostics
+
+---
+
+# 📄 Resume
+
+My latest CV is available here:
+
+**[Download / View Wamiq Ajmal CV](assets/Wamiq_Ajmal_CV.pdf)**
+
+---
+
+# 🚀 Run Locally
+
+Clone the repository:
+
+```bash
+git clone https://github.com/wamiqajmal/Wamiq-Portfolio.git
+```
+
+Open the project folder:
+
+```bash
+cd Wamiq-Portfolio
+```
+
+Then open `index.html` with a local server such as **VS Code Live Server**.
+
+---
+
+# 🌍 Deployment
+
+The portfolio is deployed using **GitHub Pages**.
+
+### Deployment Source
 
 ```text
-SolidWorks (2D/3D)
-Creo Parametric
-CNC Operation
-Precision Machining
-Metal Fabrication
-G-Code Fundamentals
+Branch: main
+Directory: /
+```
+
+### Live URL
+
+https://wamiqajmal.github.io/Wamiq-Portfolio/
+
+---
+
+# 📬 Contact
+
+**Wamiq Ajmal**  
+Mechanical Engineering Technology
+
+📍 Peshawar, Pakistan
+
+📧 [engrwamiqajmal@gmail.com](mailto:engrwamiqajmal@gmail.com)
+
+🔗 [LinkedIn](https://linkedin.com/in/engrwamiqajmal)
+
+---
+
+# ⭐ Repository
+
+If you are interested in mechanical engineering, CAD, CNC machining, manufacturing, or engineering portfolio development, feel free to explore the repository.
+
+---
+
+<p align="center">
+  <b>Designed & Developed by Wamiq Ajmal</b><br>
+  Mechanical Engineering Technology
+</p>

@@ -5,23 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wamiq Ajmal | Interactive Engineering Terminal</title>
     
-    <!-- React & ReactDOM -->
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
-    <!-- Three.js for 2D Canvas Animation -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Reliable CDNs for React, ReactDOM, Babel, and Three.js -->
+    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.6/babel.min.js"></script>
+    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-    <!-- Google Fonts for Technical Aesthetic -->
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
     <style>
         :root {
             --bg-color: #020617;
-            --panel-bg: rgba(10, 15, 30, 0.65);
+            --panel-bg: rgba(10, 15, 30, 0.75);
             --border-color: #1e3a8a;
-            --border-highlight: #60a5fa;
             --accent-main: #38bdf8;
             --accent-glow: rgba(56, 189, 248, 0.6);
             --accent-secondary: #818cf8;
@@ -32,8 +29,7 @@
             --font-sans: system-ui, -apple-system, sans-serif;
         }
 
-        /* Custom UI Cursor */
-        * { cursor: crosshair !important; box-sizing: border-box; }
+        * { box-sizing: border-box; cursor: crosshair !important; }
 
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
@@ -41,19 +37,27 @@
             font-family: var(--font-sans); overflow: hidden;
         }
 
-        /* ThreeJS Background */
+        /* Native Loading Screen */
+        #loading-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #020617; color: var(--accent-main); font-family: var(--font-mono);
+            display: flex; justify-content: center; align-items: center; z-index: 9999;
+            font-size: 1.5rem; flex-direction: column; gap: 20px;
+        }
+        .spinner { width: 50px; height: 50px; border: 3px solid transparent; border-top-color: var(--accent-main); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Layers Setup - Guaranteed visibility */
         #three-canvas-container {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: -1; background: radial-gradient(circle at center, #061026 0%, #02040a 100%);
+            z-index: 0; /* Background Layer */
+            background: radial-gradient(circle at center, #061026 0%, #02040a 100%);
         }
 
-        /* React App Container */
         #root {
-            height: 100vh; display: flex; flex-direction: column;
-            padding: 2vw; pointer-events: none; /* Let clicks pass to background if empty */
+            position: relative; z-index: 10; /* UI Layer */
+            height: 100vh; display: flex; flex-direction: column; padding: 2vw;
         }
-        
-        .interactive-layer { pointer-events: auto; } /* Re-enable clicks for UI */
 
         .app-container {
             display: flex; flex-direction: row; height: 100%;
@@ -62,26 +66,15 @@
 
         /* Sidebar Navigation */
         .sidebar {
-            width: 300px; background: var(--panel-bg);
+            width: 320px; background: var(--panel-bg);
             border: 1px solid var(--border-color); border-radius: 12px;
             padding: 30px; display: flex; flex-direction: column;
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            flex-shrink: 0; position: relative; overflow: hidden;
+            backdrop-filter: blur(10px); flex-shrink: 0; position: relative;
             box-shadow: inset 0 0 20px rgba(30, 58, 138, 0.3), 0 10px 40px rgba(0,0,0,0.8);
         }
 
-        /* Scanning Line Animation for Sidebar */
-        .sidebar::after {
-            content: ''; position: absolute; top: -50%; left: 0; right: 0; height: 2px;
-            background: var(--accent-main); box-shadow: 0 0 10px var(--accent-main);
-            animation: scan 6s linear infinite; opacity: 0.5; pointer-events: none;
-        }
-        @keyframes scan { 0% { top: -10%; } 100% { top: 110%; } }
-
-        /* Profile Picture Component */
-        .profile-img-container { text-align: center; margin-bottom: 25px; position: relative; display: inline-block; width: 100%; }
-        
-        /* Rotating Outer Ring for Profile */
+        /* Profile Picture Structure */
+        .profile-img-container { text-align: center; margin-bottom: 25px; position: relative; width: 100%; }
         .profile-ring {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             width: 150px; height: 150px; border-radius: 50%;
@@ -94,16 +87,12 @@
             border: 2px solid var(--accent-main);
             box-shadow: 0 0 25px var(--accent-glow), inset 0 0 15px var(--accent-glow);
             background-color: #0f172a; padding: 5px; position: relative; z-index: 2;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .profile-img:hover { transform: scale(1.1) rotate(5deg); border-color: #fff; box-shadow: 0 0 35px var(--accent-main); }
 
         .profile-header h1 {
-            font-family: var(--font-headers); font-size: 2.4rem; color: var(--text-main);
-            margin: 0 0 5px 0; text-transform: uppercase; letter-spacing: 2px;
-            text-align: center; text-shadow: 0 0 15px var(--accent-glow);
+            font-family: var(--font-headers); font-size: 2.2rem; color: var(--text-main);
+            margin: 0 0 5px 0; text-transform: uppercase; text-align: center; text-shadow: 0 0 15px var(--accent-glow);
         }
-
         .profile-header p {
             font-size: 0.85rem; color: var(--accent-main); margin-bottom: 25px;
             line-height: 1.5; text-align: center; font-family: var(--font-mono);
@@ -111,133 +100,77 @@
         }
 
         .nav-btn {
-            background: transparent; border: 1px solid transparent; border-bottom: 1px solid rgba(30, 58, 138, 0.3);
-            color: var(--text-main); text-align: left; padding: 15px;
-            cursor: pointer; font-family: var(--font-mono); font-size: 1rem;
-            transition: all 0.3s ease; position: relative; overflow: hidden;
-            display: flex; align-items: center; text-transform: uppercase; letter-spacing: 1px;
+            background: transparent; border: none; border-bottom: 1px solid rgba(30, 58, 138, 0.3);
+            color: var(--text-main); text-align: left; padding: 15px; margin-bottom: 5px;
+            font-family: var(--font-mono); font-size: 1rem; transition: all 0.3s ease;
+            text-transform: uppercase; border-radius: 4px; text-decoration: none; display: block;
         }
-        .nav-btn::before {
-            content: '>'; position: absolute; left: -20px; color: var(--accent-main);
-            transition: left 0.3s ease; opacity: 0; font-weight: bold;
-        }
-        .nav-btn:hover { background: rgba(56, 189, 248, 0.1); padding-left: 25px; color: var(--accent-main); }
-        .nav-btn:hover::before { left: 10px; opacity: 1; }
+        .nav-btn:hover { background: rgba(56, 189, 248, 0.1); color: var(--accent-main); padding-left: 20px; }
         .nav-btn.active {
             background: rgba(30, 58, 138, 0.4); border-left: 4px solid var(--accent-main);
-            color: #fff; padding-left: 25px; font-weight: bold; text-shadow: 0 0 8px var(--accent-main);
+            color: #fff; padding-left: 20px; font-weight: bold; text-shadow: 0 0 8px var(--accent-main);
+        }
+        .download-btn {
+            background: rgba(56, 189, 248, 0.15); border: 1px solid var(--accent-main);
+            color: var(--accent-main); margin-top: 20px; text-align: center;
         }
 
         /* Main Content Area */
         .main-content {
             flex-grow: 1; background: var(--panel-bg);
             border: 1px solid var(--border-color); border-radius: 12px;
-            padding: 40px; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            padding: 40px; backdrop-filter: blur(10px);
             overflow-y: auto; box-shadow: inset 0 0 30px rgba(30, 58, 138, 0.2), 0 10px 40px rgba(0,0,0,0.8);
-            position: relative;
         }
-
-        /* Custom Scrollbar */
         .main-content::-webkit-scrollbar { width: 8px; }
-        .main-content::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 4px; }
         .main-content::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
-        .main-content::-webkit-scrollbar-thumb:hover { background: var(--accent-main); }
 
         .section-title {
             font-family: var(--font-headers); color: var(--text-main); text-transform: uppercase;
             border-bottom: 2px solid var(--border-color); padding-bottom: 10px; margin-top: 0;
-            font-size: 2rem; letter-spacing: 2px; display: flex; align-items: center;
-            text-shadow: 0 0 10px rgba(255,255,255,0.2);
+            font-size: 2rem; letter-spacing: 2px;
         }
-        .section-title span { color: var(--accent-main); margin-right: 15px; font-family: var(--font-mono); font-size: 1.5rem; }
+        .section-title span { color: var(--accent-main); margin-right: 15px; font-family: var(--font-mono); }
 
         .grid-container {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 25px; margin-top: 25px;
         }
 
-        /* Interactive Cards */
         .card {
             background: linear-gradient(135deg, rgba(15, 23, 42, 0.7), rgba(2, 6, 23, 0.9));
             border: 1px solid var(--border-color); padding: 25px; border-radius: 8px;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            position: relative; overflow: hidden; cursor: pointer;
-        }
-        .card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, rgba(56, 189, 248, 0.1) 0%, transparent 70%);
-            opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
+            transition: all 0.3s ease; position: relative;
         }
         .card:hover {
-            transform: translateY(-5px) scale(1.02); border-color: var(--accent-main);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(56, 189, 248, 0.2);
+            transform: translateY(-5px); border-color: var(--accent-main);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.6), 0 0 20px rgba(56, 189, 248, 0.2);
         }
-        .card:hover::before { opacity: 1; }
-        .card h3 {
-            margin: 0 0 10px 0; color: #fff; font-size: 1.4rem; font-family: var(--font-headers);
-            letter-spacing: 1px; transition: color 0.3s;
-        }
-        .card:hover h3 { color: var(--accent-main); }
+        .card h3 { margin: 0 0 10px 0; color: #fff; font-size: 1.3rem; font-family: var(--font-headers); }
         .card-meta { font-size: 0.85rem; color: var(--accent-secondary); margin-bottom: 15px; font-family: var(--font-mono); }
-
+        
         .tech-tag {
             display: inline-block; background: rgba(56, 189, 248, 0.05);
             border: 1px solid var(--accent-secondary); color: var(--accent-main);
-            padding: 5px 12px; font-size: 0.85rem; border-radius: 4px; margin: 4px;
-            font-family: var(--font-mono); transition: all 0.2s;
+            padding: 5px 10px; font-size: 0.8rem; border-radius: 4px; margin: 3px; font-family: var(--font-mono);
         }
-        .tech-tag:hover { background: var(--accent-main); color: var(--bg-color); box-shadow: 0 0 10px var(--accent-main); }
 
-        /* Modal / HUD Overlay */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(8px);
-            display: flex; justify-content: center; align-items: center; z-index: 1000;
-            opacity: 0; animation: fadeInModal 0.3s forwards; pointer-events: auto;
-        }
-        @keyframes fadeInModal { to { opacity: 1; } }
-        
-        .modal-content {
-            background: #020617; border: 2px solid var(--accent-main);
-            width: 90%; max-width: 700px; padding: 40px; border-radius: 12px;
-            box-shadow: 0 0 50px rgba(56, 189, 248, 0.3), inset 0 0 20px rgba(56, 189, 248, 0.2);
-            position: relative; transform: scale(0.9); animation: popModal 0.3s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @keyframes popModal { to { transform: scale(1); } }
-        
-        .modal-close {
-            position: absolute; top: 20px; right: 20px; background: transparent;
-            border: 1px solid var(--accent-main); color: var(--accent-main);
-            width: 35px; height: 35px; font-family: var(--font-mono); font-size: 1.2rem;
-            cursor: pointer; transition: all 0.2s; border-radius: 4px;
-        }
-        .modal-close:hover { background: var(--accent-main); color: var(--bg-color); }
-
-        /* Animation Classes */
-        .stagger-in { opacity: 0; animation: slideUpFade 0.5s forwards ease-out; }
+        .stagger-in { animation: slideUpFade 0.5s forwards ease-out; opacity: 0; }
         @keyframes slideUpFade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Terminal Typing Effect */
-        .typing-text { border-right: 2px solid var(--accent-main); white-space: pre-wrap; animation: blink 1s step-end infinite; }
-        @keyframes blink { 50% { border-color: transparent; } }
-
-        a { color: var(--accent-main); text-decoration: none; position: relative; }
-        a::after { content: ''; position: absolute; width: 100%; transform: scaleX(0); height: 1px; bottom: -2px; left: 0; background-color: var(--accent-main); transform-origin: bottom right; transition: transform 0.3s ease-out; }
-        a:hover::after { transform: scaleX(1); transform-origin: bottom left; }
 
         @media (max-width: 950px) {
             .app-container { flex-direction: column; gap: 20px; padding: 10px; }
-            .sidebar { width: 100%; flex-direction: column; padding: 20px; }
-            .profile-img { width: 100px; height: 100px; }
-            .profile-ring { width: 120px; height: 120px; }
-            .nav-btn { text-align: center; justify-content: center; }
-            .nav-btn::before { display: none; }
-            .nav-btn:hover { padding-left: 15px; }
-            .main-content { padding: 20px; }
+            .sidebar { width: 100%; }
         }
     </style>
 </head>
 <body>
+
+    <!-- Loading Screen (Removed by React once compiled) -->
+    <div id="loading-screen">
+        <div class="spinner"></div>
+        <p>Compiling Systems...<br><small style="font-size: 0.8rem; color:#94a3b8;">If this screen stays forever, please open this file using a Local Server (e.g., VS Code Live Server).</small></p>
+    </div>
 
     <!-- Background Layer (Three.js) -->
     <div id="three-canvas-container"></div>
@@ -245,7 +178,7 @@
     <!-- UI Layer (React) -->
     <div id="root"></div>
 
-    <!-- Three.js Interactive 2D Blueprint Script -->
+    <!-- Three.js Interactive 2D Background -->
     <script>
         const initThreeJS = () => {
             const container = document.getElementById('three-canvas-container');
@@ -259,7 +192,6 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
             container.appendChild(renderer.domElement);
 
-            // 1. Grid System
             const gridGroup = new THREE.Group();
             const gridMat = new THREE.LineBasicMaterial({ color: '#1e3a8a', transparent: true, opacity: 0.15 });
             for (let i = -50; i <= 50; i += 1.5) {
@@ -268,74 +200,40 @@
             }
             scene.add(gridGroup);
 
-            // 2. Interactive Gear System
-            const createGear = (radius, teeth, innerRadius, color, opacity) => {
+            const createGear = (radius, teeth, innerRadius, color) => {
                 const pts = [];
                 for(let i=0; i<=teeth * 2; i++) {
                     const a = (i / (teeth * 2)) * Math.PI * 2;
                     const r = i % 2 === 0 ? radius : innerRadius;
                     pts.push(new THREE.Vector3(Math.cos(a)*r, Math.sin(a)*r, 0));
                 }
-                return new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color, transparent: true, opacity }));
+                return new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.2 }));
             };
 
-            const gearSys = new THREE.Group();
-            const gearMain = createGear(5, 32, 4.2, '#38bdf8', 0.2);
-            const gearSub = createGear(2.5, 16, 2.0, '#818cf8', 0.25);
-            gearMain.position.set(-8, -3, 0);
-            gearSub.position.set(-1.8, 1.2, 0);
-            gearSys.add(gearMain); gearSys.add(gearSub);
-            scene.add(gearSys);
+            const gearMain = createGear(5, 32, 4.2, '#38bdf8');
+            const gearSub = createGear(2.5, 16, 2.0, '#818cf8');
+            gearMain.position.set(-8, -3, 0); gearSub.position.set(-1.8, 1.2, 0);
+            scene.add(gearMain); scene.add(gearSub);
 
-            // 3. Mouse Tracking Crosshair (Interactive)
-            const crosshair = new THREE.Group();
-            const chMat = new THREE.LineBasicMaterial({ color: '#38bdf8', opacity: 0.5, transparent: true });
-            crosshair.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-0.5,0,0), new THREE.Vector3(0.5,0,0)]), chMat));
-            crosshair.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,-0.5,0), new THREE.Vector3(0,0.5,0)]), chMat));
-            scene.add(crosshair);
-
-            // Mouse Interaction Variables
-            let targetX = 0; let targetY = 0;
             let mouseX = 0; let mouseY = 0;
-
             document.addEventListener('mousemove', (e) => {
-                // Normalize mouse coordinates for Parallax & Crosshair
                 mouseX = (e.clientX / window.innerWidth) * 2 - 1;
                 mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
-                
-                // Map to Orthographic space
-                targetX = mouseX * aspect * 10;
-                targetY = mouseY * 10;
             });
 
-            // Animation Loop
-            const clock = new THREE.Clock();
             const animate = () => {
                 requestAnimationFrame(animate);
-                const delta = clock.getDelta();
-
-                // Parallax shift based on mouse
                 gridGroup.position.x += (mouseX * 0.5 - gridGroup.position.x) * 0.05;
                 gridGroup.position.y += (mouseY * 0.5 - gridGroup.position.y) * 0.05;
-
-                // Gears Rotation
-                gearMain.rotation.z -= 0.5 * delta;
-                gearSub.rotation.z += 1.0 * delta; // 2:1 ratio
-
-                // Crosshair Lerp to mouse position
-                crosshair.position.x += (targetX - crosshair.position.x) * 0.1;
-                crosshair.position.y += (targetY - crosshair.position.y) * 0.1;
-                crosshair.rotation.z -= 1.5 * delta; // Spinning crosshair
-
+                gearMain.rotation.z -= 0.005;
+                gearSub.rotation.z += 0.01; 
                 renderer.render(scene, camera);
             };
             animate();
 
-            // Resize handler
             window.addEventListener('resize', () => {
                 const aspect = window.innerWidth / window.innerHeight;
                 camera.left = -aspect * 10; camera.right = aspect * 10;
-                camera.top = 10; camera.bottom = -10;
                 camera.updateProjectionMatrix();
                 renderer.setSize(window.innerWidth, window.innerHeight);
             });
@@ -343,98 +241,88 @@
         initThreeJS();
     </script>
 
-    <!-- React Application Component -->
+    <!-- React Application Logic -->
     <script type="text/babel">
+        // Remove loading screen on script execution
+        document.getElementById('loading-screen').style.display = 'none';
+
         const { useState, useEffect } = React;
 
-        // --- Core Data Sources ---
-        // Information cited directly from provided CV details[cite: 1]
-        const experienceData = [
-            { id: 'exp1', role: "Mechanical Engineering Intern", company: "PCSIR Laboratory Complex", period: "Jun 2026 - Present", 
-              desc: "Supported CNC machining, surface grinding, precision measurement, and engineering documentation. Assisted with CNC programming, G-code generation, dry-run verification, coolant operations, and machining-parameter selection[cite: 1].",
-              tech: ["CNC Programming", "G-Code", "Surface Grinding", "Precision Measurement"] },
-            { id: 'exp2', role: "Mechanical Intern", company: "Marks Razmak Industry", period: "Jan 2026 - Jun 2026", 
-              desc: "Worked on fabrication and machining of industrial components from 2D technical drawings. Operated CNC machinery and supported precision machining and production activities while following quality requirements[cite: 1].",
-              tech: ["Fabrication", "2D Drafting", "Production QC", "Tool Grinding"] },
-            { id: 'exp3', role: "Technician", company: "Kia Motor Khyber", period: "Mar 2024 - Jan 2025", 
-              desc: "Conducted mechanical diagnostics, warranty check-ups, parts management, and job-card documentation. Supported technical troubleshooting and provided guidance to junior staff[cite: 1].",
-              tech: ["Vehicle Diagnostics", "Parts Management", "Troubleshooting"] },
-            { id: 'exp4', role: "IT Assistant", company: "The City School", period: "Aug 2021 - Aug 2022", 
-              desc: "Maintained hardware inventory and technical documentation and supported routine school IT operations. Created promotional materials and supported technical events[cite: 1].",
-              tech: ["IT Operations", "Hardware Docs", "Router Config"] }
-        ];
+        const Experience = () => (
+            <div>
+                <h2 className="section-title"><span>02</span> OPERATIONAL.HISTORY</h2>
+                <div className="grid-container">
+                    <div className="card stagger-in">
+                        <h3>Mechanical Engineering Intern</h3>
+                        <div className="card-meta">[Jun 2026 - Present] | PCSIR Laboratory Complex</div>
+                        <p style={{fontSize: '0.95rem', color: '#cbd5e1', lineHeight: '1.5'}}>Supported CNC machining, surface grinding, precision measurement, and engineering documentation[cite: 1]. Assisted with CNC programming, G-code generation, and machining-parameter selection[cite: 1].</p>
+                        <div><span className="tech-tag">CNC Programming</span><span className="tech-tag">G-Code</span></div>
+                    </div>
+                    
+                    <div className="card stagger-in" style={{animationDelay: '0.1s'}}>
+                        <h3>Mechanical Intern</h3>
+                        <div className="card-meta">[Jan 2026 - Jun 2026] | Marks Razmak Industry</div>
+                        <p style={{fontSize: '0.95rem', color: '#cbd5e1', lineHeight: '1.5'}}>Worked on fabrication and machining of industrial components from 2D technical drawings[cite: 1]. Operated CNC machinery and supported precision machining while following quality requirements[cite: 1].</p>
+                        <div><span className="tech-tag">Fabrication</span><span className="tech-tag">2D Drafting</span></div>
+                    </div>
 
-        const portfolioData = [
-            { category: "CAD Models & SolidWorks", items: [
-                { id: 'p1', title: "Portable Metal Cutting Machine (PMCM)", meta: "Final Year Project", desc: "Designed and developed a portable cutting unit; created 3D assemblies in SolidWorks, managed welding/assembly fabrication, and validated performance through safety testing[cite: 1].", tech: ["SolidWorks 3D", "Welding", "Assembly Verification"] },
-                { id: 'p2', title: "Industrial Components Modeling", meta: "Marks Razmak", desc: "Drafting and modeling industrial components derived directly from 2D technical drawings for precision manufacturing[cite: 1].", tech: ["SolidWorks 2D/3D", "Creo Parametric"] }
-            ]},
-            { category: "Manufacturing & Automation", items: [
-                { id: 'p3', title: "CNC Machining Optimization", meta: "Process Control", desc: "Observation and execution of CNC programming, G-code fundamentals, dry-run verifications, and machining-parameter selection to ensure high-fidelity outputs[cite: 1].", tech: ["G-Code", "CNC Operations", "Machining Parameters"] },
-                { id: 'p4', title: "Precision Surface Finishing", meta: "Manufacturing", desc: "Performed supervised flat-surface grinding, checked surface finish/flatness using precision instruments, and executed grinding-wheel dressing/balancing[cite: 1].", tech: ["Surface Grinding", "Quality Control"] }
-            ]}
-        ];
-
-        // --- Interactive Components ---
-
-        // Typing Effect Hook
-        const useTypewriter = (text, speed = 20) => {
-            const [displayText, setDisplayText] = useState('');
-            useEffect(() => {
-                let i = 0;
-                setDisplayText('');
-                const timer = setInterval(() => {
-                    if (i < text.length) { setDisplayText(prev => prev + text.charAt(i)); i++; } 
-                    else { clearInterval(timer); }
-                }, speed);
-                return () => clearInterval(timer);
-            }, [text]);
-            return displayText;
-        };
-
-        // Reusable Modal Component
-        const HUDModal = ({ data, onClose }) => {
-            if (!data) return null;
-            return (
-                <div className="modal-overlay" onClick={onClose}>
-                    <div className="modal-content" onClick={e => e.stopPropagation()}>
-                        <button className="modal-close" onClick={onClose}>X</button>
-                        <h2 style={{fontFamily: 'var(--font-headers)', color: 'var(--accent-main)', marginTop: 0, fontSize: '2rem', textTransform: 'uppercase'}}>{data.title || data.role}</h2>
-                        <div style={{color: 'var(--accent-secondary)', fontFamily: 'var(--font-mono)', marginBottom: '20px', fontSize: '1.1rem'}}>
-                            > {data.meta || data.company} {data.period ? `[${data.period}]` : ''}
-                        </div>
-                        <p style={{fontSize: '1.1rem', lineHeight: '1.6', color: '#e2e8f0'}}>{data.desc}</p>
-                        
-                        <div style={{marginTop: '30px', borderTop: '1px dashed var(--border-color)', paddingTop: '20px'}}>
-                            <div style={{fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', marginBottom: '10px'}}>SYSTEM_PARAMETERS_LOADED:</div>
-                            <div style={{display: 'flex', flexWrap: 'wrap', gap: '8px'}}>
-                                {data.tech && data.tech.map((t, i) => <span key={i} className="tech-tag">__{t}</span>)}
-                            </div>
-                        </div>
+                    <div className="card stagger-in" style={{animationDelay: '0.2s'}}>
+                        <h3>Technician</h3>
+                        <div className="card-meta">[Mar 2024 - Jan 2025] | Kia Motor Khyber</div>
+                        <p style={{fontSize: '0.95rem', color: '#cbd5e1', lineHeight: '1.5'}}>Conducted mechanical diagnostics, warranty check-ups, parts management, and job-card documentation[cite: 1]. Supported technical troubleshooting[cite: 1].</p>
+                        <div><span className="tech-tag">Vehicle Diagnostics</span><span className="tech-tag">Troubleshooting</span></div>
                     </div>
                 </div>
-            );
-        };
+            </div>
+        );
 
-        // --- Pages ---
+        const Portfolio = () => (
+            <div>
+                <h2 className="section-title"><span>03</span> SCHEMATIC.DATABASE</h2>
+                <h3 style={{color: 'var(--accent-secondary)', fontFamily: 'var(--font-headers)', marginTop: '20px'}}>// CAD Models & SolidWorks</h3>
+                <div className="grid-container">
+                    <div className="card stagger-in">
+                        {/* Example of how to add an image from the assets folder later */}
+                        {/* <img src="assets/pmcm-project.jpg" alt="PMCM Project" style={{width: '100%', borderRadius: '4px', marginBottom: '15px'}} /> */}
+                        
+                        <h3>Portable Metal Cutting Machine</h3>
+                        <div className="card-meta">_Final Year Project</div>
+                        <p style={{fontSize: '0.95rem', color: '#cbd5e1'}}>Designed and developed a portable cutting unit; created 3D assemblies in SolidWorks, managed welding/assembly fabrication[cite: 1].</p>
+                    </div>
+                    <div className="card stagger-in" style={{animationDelay: '0.1s'}}>
+                        <h3>Industrial Components Modeling</h3>
+                        <div className="card-meta">_Marks Razmak</div>
+                        <p style={{fontSize: '0.95rem', color: '#cbd5e1'}}>Drafting and modeling industrial components derived directly from 2D technical drawings for precision manufacturing[cite: 1].</p>
+                    </div>
+                </div>
+            </div>
+        );
+
         const Home = () => {
-            const introText = "Initializing professional profile...\nLoading credentials...\nUser: Wamiq Ajmal [Mechanical Engineer Technology]\nLocation: Peshawar, Pakistan\nStatus: Online & Ready for Operations.\n\nSUMMARY:\nMechanical Engineering Technology professional with a 3.81 GPA and hands-on experience across CNC machining, CAD-based design, precision manufacturing, fabrication, vehicle diagnostics, and technical documentation[cite: 1]. Experienced with SolidWorks, Creo/PRO-ENGINEER, and G-code fundamentals[cite: 1].";
-            const typedText = useTypewriter(introText, 15);
+            const [text, setText] = useState('');
+            const fullText = "Initializing professional profile...\nUser: Wamiq Ajmal [Mechanical Engineer Technology]\n\nSUMMARY:\nMechanical Engineering Technology professional with a 3.81 GPA and hands-on experience across CNC machining, CAD-based design, precision manufacturing, fabrication, vehicle diagnostics, and technical documentation[cite: 1]. Experienced with SolidWorks, Creo/PRO-ENGINEER, and G-code fundamentals[cite: 1].";
+            
+            useEffect(() => {
+                let i = 0;
+                const timer = setInterval(() => {
+                    if (i < fullText.length) { setText(prev => prev + fullText.charAt(i)); i++; } 
+                    else clearInterval(timer);
+                }, 10);
+                return () => clearInterval(timer);
+            }, []);
 
             return (
                 <div>
                     <h2 className="section-title"><span>01</span> SYSTEM.OVERVIEW</h2>
-                    <div className="typing-text" style={{fontFamily: 'var(--font-mono)', fontSize: '1.15rem', lineHeight: '1.8', color: '#93c5fd', background: 'rgba(0,0,0,0.4)', padding: '20px', borderRadius: '8px', border: '1px solid var(--border-color)'}}>
-                        {typedText}
+                    <div style={{fontFamily: 'var(--font-mono)', fontSize: '1.1rem', lineHeight: '1.8', color: '#93c5fd', background: 'rgba(0,0,0,0.4)', padding: '20px', borderRadius: '8px', border: '1px solid var(--border-color)', whiteSpace: 'pre-wrap'}}>
+                        {text}
                     </div>
                     
-                    <div className="stagger-in" style={{animationDelay: '1s', marginTop: '40px'}}>
+                    <div className="stagger-in" style={{animationDelay: '1s', marginTop: '30px'}}>
                         <h3 style={{color: 'var(--accent-secondary)', fontFamily: 'var(--font-headers)', fontSize: '1.5rem'}}>// PRIMARY_TOOLSET</h3>
-                        <div style={{display: 'flex', flexWrap: 'wrap', gap: '10px', marginTop:'15px'}}>
-                            {['SolidWorks (2D/3D)', 'Creo Parametric', 'CNC Operation', 'Precision Machining', 'Metal Fabrication', 'G-code Fundamentals', 'Quality Control', 'MS Office & IT'].map((skill, i) => (
-                                <span key={skill} className="tech-tag" style={{animation: `slideUpFade 0.3s forwards ease-out`, animationDelay: `${1.2 + (i*0.1)}s`, opacity: 0}}>
-                                    SYS.{skill.replace(/\s+/g, '_').toUpperCase()}
-                                </span>
+                        <div style={{display: 'flex', flexWrap: 'wrap', gap: '10px'}}>
+                            {['SolidWorks (2D/3D)', 'Creo Parametric', 'CNC Operation', 'Precision Machining', 'Metal Fabrication', 'G-code Fundamentals'].map((skill, i) => (
+                                <span key={skill} className="tech-tag" style={{animationDelay: `${1.2 + (i*0.1)}s`}}>SYS.{skill.toUpperCase()}</span>
                             ))}
                         </div>
                     </div>
@@ -442,125 +330,62 @@
             );
         };
 
-        const Experience = ({ openModal }) => (
-            <div>
-                <h2 className="section-title"><span>02</span> OPERATIONAL.HISTORY</h2>
-                <div className="grid-container">
-                    {experienceData.map((exp, idx) => (
-                        <div key={exp.id} className="card stagger-in" style={{animationDelay: `${idx * 0.15}s`}} onClick={() => openModal(exp)}>
-                            <h3>{exp.role}</h3>
-                            <div className="card-meta">[{exp.period}] | {exp.company}</div>
-                            <p style={{fontSize: '0.95rem', color: '#cbd5e1', lineHeight: '1.5', margin: 0}}>
-                                Click to view operational diagnostics and task logs...
-                            </p>
-                            <div style={{marginTop: '15px', display: 'flex', flexWrap: 'wrap', gap: '5px'}}>
-                                {exp.tech.slice(0,2).map(t => <span key={t} className="tech-tag" style={{fontSize: '0.7rem', padding: '2px 6px'}}>{t}</span>)}
-                                <span className="tech-tag" style={{fontSize: '0.7rem', padding: '2px 6px', color: 'var(--text-muted)'}}>+ details</span>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        );
-
-        const Portfolio = ({ openModal }) => (
-            <div>
-                <h2 className="section-title"><span>03</span> SCHEMATIC.DATABASE</h2>
-                {portfolioData.map((category, catIdx) => (
-                    <div key={catIdx} className="stagger-in" style={{animationDelay: `${catIdx * 0.2}s`}}>
-                        <h3 style={{color: 'var(--accent-secondary)', fontFamily: 'var(--font-headers)', marginTop: '30px', fontSize: '1.5rem', borderBottom: '1px solid rgba(129, 140, 248, 0.3)', paddingBottom: '10px'}}>
-                            // {category.category}
-                        </h3>
-                        <div className="grid-container" style={{marginTop: '15px'}}>
-                            {category.items.map((item, idx) => (
-                                <div key={item.id} className="card" onClick={() => openModal(item)}>
-                                    <h3>{item.title}</h3>
-                                    <div className="card-meta">_{item.meta}</div>
-                                    <p style={{fontSize: '0.9rem', color: '#cbd5e1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
-                                        {item.desc}
-                                    </p>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                ))}
-            </div>
-        );
-
         const Contact = () => (
             <div>
                 <h2 className="section-title"><span>04</span> COMM_LINK.ESTABLISH</h2>
-                <div className="stagger-in card" style={{maxWidth: '600px', marginTop: '30px', borderLeft: '4px solid var(--accent-main)', background: 'rgba(0,0,0,0.5)'}}>
-                    <h3 style={{borderBottom: '1px dashed var(--border-color)', paddingBottom: '15px'}}>Transmission Coordinates</h3>
-                    <div style={{fontFamily: 'var(--font-mono)', fontSize: '1.1rem', lineHeight: '2.5', marginTop: '20px'}}>
-                        <div><span style={{color: 'var(--accent-secondary)', width: '80px', display: 'inline-block'}}>LOC:</span> <span style={{color: '#fff'}}>Peshawar, Pakistan</span>[cite: 1]</div>
-                        <div><span style={{color: 'var(--accent-secondary)', width: '80px', display: 'inline-block'}}>TEL:</span> <span style={{color: '#fff'}}>03024233318</span>[cite: 1]</div>
-                        <div><span style={{color: 'var(--accent-secondary)', width: '80px', display: 'inline-block'}}>EML:</span> <a href="mailto:engrwamiqajmal@gmail.com">engrwamiqajmal@gmail.com</a>[cite: 1]</div>
-                        <div><span style={{color: 'var(--accent-secondary)', width: '80px', display: 'inline-block'}}>LNK:</span> <a href="https://linkedin.com/in/engrwamiqajmal" target="_blank">linkedin.com/in/engrwamiqajmal</a>[cite: 1]</div>
-                        <div><span style={{color: 'var(--accent-secondary)', width: '80px', display: 'inline-block'}}>URL:</span> <a href="https://tinyurl.com/2wd8nvdt" target="_blank">tinyurl.com/2wd8nvdt</a>[cite: 1]</div>
+                <div className="stagger-in card" style={{maxWidth: '600px', marginTop: '30px'}}>
+                    <div style={{fontFamily: 'var(--font-mono)', fontSize: '1.1rem', lineHeight: '2.5'}}>
+                        <div><strong style={{color: 'var(--accent-secondary)'}}>LOC:</strong> Peshawar, Pakistan[cite: 1]</div>
+                        <div><strong style={{color: 'var(--accent-secondary)'}}>TEL:</strong> 03024233318[cite: 1]</div>
+                        <div><strong style={{color: 'var(--accent-secondary)'}}>EML:</strong> engrwamiqajmal@gmail.com[cite: 1]</div>
+                        <div><strong style={{color: 'var(--accent-secondary)'}}>LNK:</strong> linkedin.com/in/engrwamiqajmal[cite: 1]</div>
                     </div>
                 </div>
             </div>
         );
 
-        // --- Main App Logic ---
         const App = () => {
             const [activeTab, setActiveTab] = useState('home');
-            const [modalData, setModalData] = useState(null);
-
-            const handleTabChange = (tab) => {
-                setActiveTab(''); // Force re-render animation
-                setTimeout(() => setActiveTab(tab), 10);
-            };
 
             const renderContent = () => {
                 switch(activeTab) {
-                    case 'home': return <Home />;
-                    case 'about': return <Experience openModal={setModalData} />;
-                    case 'portfolio': return <Portfolio openModal={setModalData} />;
-                    case 'contact': return <Contact />;
+                    case 'home': return <Home key="home" />;
+                    case 'about': return <Experience key="about" />;
+                    case 'portfolio': return <Portfolio key="portfolio" />;
+                    case 'contact': return <Contact key="contact" />;
                     default: return null;
                 }
             };
 
             return (
-                <div className="app-container interactive-layer">
-                    {/* Navigation Sidebar */}
+                <div className="app-container">
                     <nav className="sidebar">
                         <div className="profile-header">
-                            
-                            {/* --- PROFILE PICTURE --- */}
-                            {/* Ensure 'profile.jpg' is in the same folder as this HTML file */}
                             <div className="profile-img-container">
                                 <div className="profile-ring"></div>
+                                {/* Root image path */}
                                 <img src="profile.jpg" alt="Wamiq Ajmal" className="profile-img" />
                             </div>
-                            {/* ----------------------- */}
-                            
                             <h1>WAMIQ AJMAL</h1>
                             <p>B.Sc. Mechanical Engineering Tech<br/>UET Peshawar | GPA: 3.81[cite: 1]</p>
                         </div>
                         
-                        <div style={{display: 'flex', flexDirection: 'column', flexGrow: 1, justifyContent: 'center', gap: '5px'}}>
-                            <button className={`nav-btn ${activeTab === 'home' ? 'active' : ''}`} onClick={() => handleTabChange('home')}>01. Overview</button>
-                            <button className={`nav-btn ${activeTab === 'about' ? 'active' : ''}`} onClick={() => handleTabChange('about')}>02. Experience</button>
-                            <button className={`nav-btn ${activeTab === 'portfolio' ? 'active' : ''}`} onClick={() => handleTabChange('portfolio')}>03. Projects</button>
-                            <button className={`nav-btn ${activeTab === 'contact' ? 'active' : ''}`} onClick={() => handleTabChange('contact')}>04. Comm_Link</button>
-                        </div>
-                        
-                        <div style={{marginTop: 'auto', textAlign: 'center', fontSize: '0.8rem', color: 'var(--accent-secondary)', fontFamily: 'var(--font-mono)'}}>
-                            <div style={{width: '10px', height: '10px', background: '#22c55e', borderRadius: '50%', display: 'inline-block', marginRight: '8px', boxShadow: '0 0 10px #22c55e'}}></div>
-                            SYSTEM ONLINE
+                        <div style={{display: 'flex', flexDirection: 'column'}}>
+                            <button className={`nav-btn ${activeTab === 'home' ? 'active' : ''}`} onClick={() => setActiveTab('home')}>01. Overview</button>
+                            <button className={`nav-btn ${activeTab === 'about' ? 'active' : ''}`} onClick={() => setActiveTab('about')}>02. Experience</button>
+                            <button className={`nav-btn ${activeTab === 'portfolio' ? 'active' : ''}`} onClick={() => setActiveTab('portfolio')}>03. Projects</button>
+                            <button className={`nav-btn ${activeTab === 'contact' ? 'active' : ''}`} onClick={() => setActiveTab('contact')}>04. Comm_Link</button>
+                            
+                            {/* Assets Download Link */}
+                            <a href="assets/Wamiq_Ajmal_CV.pdf" target="_blank" className="nav-btn download-btn">
+                                05. DOWNLOAD RESUME
+                            </a>
                         </div>
                     </nav>
                     
-                    {/* Main Dynamic Content Container */}
                     <main className="main-content">
                         {renderContent()}
                     </main>
-
-                    {/* HUD Modal Overlay Layer */}
-                    <HUDModal data={modalData} onClose={() => setModalData(null)} />
                 </div>
             );
         };

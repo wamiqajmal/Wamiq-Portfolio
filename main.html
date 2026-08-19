@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wamiq Ajmal | Portfolio</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent: #38bdf8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        header {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 4rem 2rem 2rem 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            color: var(--text-main);
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--accent);
+            margin-top: 0.5rem;
+        }
+
+        section {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        h2 {
+            border-bottom: 2px solid var(--card-bg);
+            padding-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #334155;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: var(--accent);
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: var(--card-bg);
+            margin-bottom: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--accent);
+            color: var(--bg-color);
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 1rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Wamiq Ajmal</h1>
+        <div class="subtitle">Mechanical Engineer | CAD & Manufacturing Focus</div>
+        <p style="color: var(--text-muted);">Specializing in 3D modeling, conventional & CNC machining processes, and industrial equipment design.</p>
+        <a href="#contact" class="btn">Get In Touch</a>
+    </header>
+
+    <section id="skills">
+        <h2>Technical Core</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>CAD & Design</h3>
+                <p>SolidWorks 3D Modeling, 2D Technical Drawings, Machine Component Design, Assembly & Detailing.</p>
+            </div>
+            <div class="card">
+                <h3>Machining & Fabrication</h3>
+                <p>Conventional Lathe Operations, CNC Vertical Machining Center setup, Workshop Manufacturing Processes.</p>
+            </div>
+            <div class="card">
+                <h3>Engineering Analysis</h3>
+                <p>Mechanical Systems Analysis, Materials Testing, Quality Control, Industrial Safety Protocols.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="experience">
+        <h2>Experience & Education</h2>
+        <ul>
+            <li>
+                <strong>Supervised Industrial Training</strong> — PCSIR Laboratories Complex
+                <br><small style="color: var(--text-muted);">Hands-on experience with production machinery, metalworking, and industrial QA.</small>
+            </li>
+            <li>
+                <strong>B.S. in Mechanical Engineering</strong>
+                <br><small style="color: var(--text-muted);">Focus on mechanical design, manufacturing automation, and thermo-fluid dynamics.</small>
+            </li>
+        </ul>
+    </section>
+
+    <section id="projects">
+        <h2>Featured Projects</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>SolidWorks Mechanical Assembly</h3>
+                <p>Detailed modeling and 2D drafting of multi-component mechanical systems with precise tolerances.</p>
+            </div>
+            <div class="card">
+                <h3>Machining Process Optimization</h3>
+                <p>Documentation and execution of optimized toolpath strategies on conventional lathe and CNC platforms.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <h2>Contact</h2>
+        <p>Interested in working together or reviewing my full resume?</p>
+        <p>Email: <a href="mailto:your.email@example.com" style="color: var(--accent);">your.email@example.com</a></p>
+    </section>
+
+    <footer>
+        &copy; 2026 Wamiq Ajmal. Hosted on GitHub Pages.
+    </footer>
+
+</body>
+</html>

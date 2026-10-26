@@ -839,3 +839,628 @@
     }
 
     .reveal.show {
+      opacity: 1;
+      transform: none;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes spinReverse { to { transform: rotate(-360deg); } }
+
+    @media (max-width: 1180px) {
+      .layout { grid-template-columns: 270px minmax(0,1fr); }
+      .sidebar-inner { padding: 20px; }
+      .hero { grid-template-columns: 1fr; }
+      .hero-console { max-width: 520px; }
+      .stats { grid-template-columns: repeat(2,1fr); }
+      .skills { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+
+    @media (max-width: 900px) {
+      #app { width: min(100% - 20px, 720px); padding-top: 10px; }
+      .topbar { top: 8px; }
+      .mobile-menu { display: block; }
+      .nav {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        right: 0;
+        display: none;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 8px;
+        border: 1px solid var(--line);
+        border-radius: 15px;
+        background: rgba(5,11,22,.96);
+        backdrop-filter: blur(18px);
+      }
+      .nav.open { display: flex; }
+      .nav a { padding: 12px; }
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .profile-wrap { width: 128px; height: 128px; }
+      .profile { width: 114px; height: 114px; }
+      .quick-links { grid-template-columns: repeat(3,1fr); }
+      .quick-links a { flex-direction: column; align-items: flex-start; gap: 4px; }
+      .contact-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 680px) {
+      .hero { padding: 24px; min-height: auto; }
+      .hero h2 { font-size: clamp(2.2rem, 13vw, 3.8rem); }
+      .hero p { font-size: .91rem; }
+      .stats { grid-template-columns: repeat(2,1fr); }
+      .section { padding: 20px; }
+      .section-head { align-items: start; flex-direction: column; }
+      .section-note { text-align: left; }
+      .project-grid,
+      .skills { grid-template-columns: 1fr; }
+      .job-top { flex-direction: column; gap: 7px; }
+      .quick-links { grid-template-columns: 1fr; }
+      .topbar { padding: 10px; }
+      .brand-text span { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+      }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="three-bg" aria-hidden="true"></canvas>
+
+  <div id="app">
+    <header class="topbar">
+      <a class="brand" href="#home" aria-label="Wamiq Ajmal home">
+        <span class="brand-mark">WA</span>
+        <span class="brand-text">
+          <strong>WAMIQ AJMAL</strong>
+          <span>MECHANICAL ENGINEERING TECHNOLOGY</span>
+        </span>
+      </a>
+
+      <button class="mobile-menu" id="menuBtn" aria-label="Open navigation" aria-expanded="false">☰</button>
+
+      <nav class="nav" id="nav">
+        <a href="#home" class="active">Overview</a>
+        <a href="#experience">Experience</a>
+        <a href="#projects">Projects</a>
+        <a href="#skills">Skills</a>
+        <a href="#contact">Contact</a>
+        <a href="assets/Wamiq%20Ajmal%20Design_Portfolio.pdf" target="_blank" rel="noopener">Design Portfolio ↗</a>
+        <a class="cv-nav" href="assets/Wamiq_Ajmal_CV.pdf" target="_blank" rel="noopener">Download CV ↗</a>
+      </nav>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-inner">
+          <div class="profile-wrap">
+            <div class="profile-orbit"></div>
+            <img class="profile" src="profile.jpg" alt="Portrait of Wamiq Ajmal" />
+          </div>
+
+          <div class="identity">
+            <h1>Wamiq Ajmal</h1>
+            <p class="role">B.Sc. Mechanical Engineering Technology</p>
+            <p class="meta">UET Peshawar<br />GPA: 3.81 / 4.00</p>
+            <div class="status"><span class="status-dot"></span> OPEN TO ENGINEERING OPPORTUNITIES</div>
+          </div>
+
+          <div class="quick-links">
+            <a href="#experience"><span>Professional Experience</span><span>01 →</span></a>
+            <a href="#projects"><span>Engineering Projects</span><span>02 →</span></a>
+            <a href="#skills"><span>Technical Skillset</span><span>03 →</span></a>
+            <a href="#contact"><span>Communication Link</span><span>04 →</span></a>
+            <a href="assets/Wamiq%20Ajmal%20Design_Portfolio.pdf" target="_blank" rel="noopener"><span>Design Portfolio PDF</span><span>PDF ↗</span></a>
+          </div>
+        </div>
+
+        <div class="sidebar-footer">
+          LOC // Peshawar, Pakistan<br />
+          PROFILE // Mechanical Engineering Technology<br />
+          SYSTEM // Portfolio v2.0
+        </div>
+      </aside>
+
+      <main class="main">
+        <section id="home" class="hero reveal">
+          <div>
+            <div class="eyebrow"><i></i> PROFESSIONAL ENGINEERING PROFILE</div>
+            <h2>Design. <span>Manufacture.</span> Improve.</h2>
+            <p>
+              Mechanical Engineering Technology professional with hands-on exposure to
+              CNC machining, CAD-based design, precision manufacturing, fabrication,
+              vehicle diagnostics, and engineering documentation.
+            </p>
+
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="assets/Wamiq_Ajmal_CV.pdf" target="_blank" rel="noopener">View CV ↗</a>
+              <a class="btn" href="#projects">Explore Projects ↓</a>
+              <a class="btn" href="assets/Wamiq%20Ajmal%20Design_Portfolio.pdf" target="_blank" rel="noopener">Design Portfolio ↗</a>
+              <a class="btn" href="https://linkedin.com/in/engrwamiqajmal" target="_blank" rel="noopener">LinkedIn ↗</a>
+            </div>
+          </div>
+
+          <div class="hero-console">
+            <div class="console-head">
+              <i></i><i></i><i></i>
+              <span>profile_status.log</span>
+            </div>
+            <div class="console-body">
+              <div><span class="prompt">root@wamq</span>:~$ status</div>
+              <div class="value">PROFILE   <span class="accent">ACTIVE</span></div>
+              <div class="value">SPECIALTY Manufacturing / CAD / CNC</div>
+              <div class="value">LOCATION  Peshawar, Pakistan</div>
+              <div class="value">GPA       3.81 / 4.00</div>
+              <br />
+              <div><span class="prompt">root@wamq</span>:~$ ready_to_build</div>
+              <div class="green">OK — systems operational.</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="stats reveal" aria-label="Portfolio statistics">
+          <div class="stat"><div class="n">3.81</div><div class="l">GPA / 4.00</div></div>
+          <div class="stat"><div class="n">03</div><div class="l">Professional Roles</div></div>
+          <div class="stat"><div class="n">02</div><div class="l">Featured Projects</div></div>
+          <div class="stat"><div class="n">06+</div><div class="l">Core Engineering Skills</div></div>
+        </section>
+
+        <section id="experience" class="section reveal">
+          <div class="section-head">
+            <div>
+              <p class="section-kicker">01 // Operational History</p>
+              <h3>Engineering Experience</h3>
+            </div>
+            <div class="section-note">Manufacturing, machining, technical troubleshooting, documentation and shop-floor exposure.</div>
+          </div>
+
+          <div class="timeline">
+            <article class="job">
+              <div class="job-dot"></div>
+              <div class="job-card">
+                <div class="job-top">
+                  <div>
+                    <h4 class="job-title">Technical Engineer Mechanical</h4>
+                    <div class="job-company">PCSIR Laboratory Complex</div>
+                  </div>
+                  <div class="job-date">JUN 2026 — OCT 2026</div>
+                </div>
+                <p>Supported CNC machining, surface grinding, precision measurement and engineering documentation. Developed practical understanding of CNC programming, G-code generation and machining-parameter selection.</p>
+                <div class="tags"><span class="tag">CNC PROGRAMMING</span><span class="tag">G-CODE</span><span class="tag">SURFACE GRINDING</span><span class="tag">MEASUREMENT</span></div>
+              </div>
+            </article>
+
+            <article class="job">
+              <div class="job-dot"></div>
+              <div class="job-card">
+                <div class="job-top">
+                  <div>
+                    <h4 class="job-title">Mechanical Intern</h4>
+                    <div class="job-company">Marks Razmak Industry</div>
+                  </div>
+                  <div class="job-date">JAN 2026 — JUN 2026</div>
+                </div>
+                <p>Worked on fabrication and machining of industrial components from 2D technical drawings, including CNC-related shop-floor activities and precision manufacturing tasks.</p>
+                <div class="tags"><span class="tag">FABRICATION</span><span class="tag">2D DRAWINGS</span><span class="tag">MACHINING</span><span class="tag">QC</span></div>
+              </div>
+            </article>
+
+            <article class="job">
+              <div class="job-dot"></div>
+              <div class="job-card">
+                <div class="job-top">
+                  <div>
+                    <h4 class="job-title">Technician</h4>
+                    <div class="job-company">Kia Motor Khyber</div>
+                  </div>
+                  <div class="job-date">MAR 2024 — JAN 2025</div>
+                </div>
+                <p>Conducted mechanical diagnostics, warranty check-ups, parts management and job-card documentation while supporting technical troubleshooting.</p>
+                <div class="tags"><span class="tag">VEHICLE DIAGNOSTICS</span><span class="tag">TROUBLESHOOTING</span><span class="tag">DOCUMENTATION</span></div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section id="projects" class="section reveal">
+          <div class="section-head">
+            <div>
+              <p class="section-kicker">02 // Schematic Database</p>
+              <h3>Design Portfolio & Engineering Projects</h3>
+            </div>
+            <div class="section-note">
+              Selected work from the 17-page engineering design portfolio, covering CAD assemblies,
+              industrial mechanisms, sheet metal, precision-machined components, surfacing and technical documentation.
+            </div>
+          </div>
+
+          <div class="project-grid">
+            <article class="project" style="border-color: rgba(85,215,255,.36); background: radial-gradient(circle at 90% 8%, rgba(85,215,255,.15), transparent 28%), rgba(85,215,255,.025);">
+              <div class="project-num">DOCUMENT / 00</div>
+              <h4>Wamiq Ajmal Design Portfolio</h4>
+              <p>
+                Complete engineering design portfolio presenting CAD engineering work,
+                technical documentation, mechanical assemblies, precision components and manufacturing-oriented designs.
+              </p>
+              <div class="tags">
+                <span class="tag">17-PAGE PDF</span>
+                <span class="tag">CAD ENGINEERING</span>
+                <span class="tag">TECHNICAL DESIGN</span>
+              </div>
+              <div class="project-footer">
+                <span class="project-type">FULL DESIGN PORTFOLIO</span>
+                <a class="mini-chip" href="assets/Wamiq%20Ajmal%20Design_Portfolio.pdf" target="_blank" rel="noopener">OPEN PDF ↗</a>
+              </div>
+            </article>
+
+            <article class="project">
+              <div class="project-num">PROJECT / 01</div>
+              <h4>Portable Metal Cutting Machine</h4>
+              <p>
+                Custom-engineered multi-axis cutting assembly featuring precision lead-screw
+                adjustment and dual-rod support for improved operational stability.
+              </p>
+              <div class="tags">
+                <span class="tag">SOLIDWORKS</span>
+                <span class="tag">ASSEMBLY DESIGN</span>
+                <span class="tag">FABRICATION</span>
+              </div>
+              <div class="project-footer">
+                <span class="project-type">FINAL YEAR PROJECT</span>
+                <span class="mini-chip">PMCM</span>
+              </div>
+            </article>
+
+            <article class="project">
+              <div class="project-num">DESIGN / 02</div>
+              <h4>Door Lock & Security Sub-Systems</h4>
+              <p>
+                Mechanical door hardware including the main door lock assembly, linear rod
+                actuators, lock handle holder, roller pin holder, hard-point attachment and rod guide.
+              </p>
+              <div class="tags">
+                <span class="tag">MECHANISM DESIGN</span>
+                <span class="tag">ASSEMBLY</span>
+                <span class="tag">PRECISION FIT</span>
+              </div>
+              <div class="project-footer">
+                <span class="project-type">INDUSTRIAL MECHANISMS</span>
+                <span class="mini-chip">SUB-SYSTEM</span>
+              </div>
+            </article>
+
+            <article class="project">
+              <div class="project-num">DESIGN / 03</div>
+              <h4>Main Body & Structural Chassis</h4>
+              <p>
+                Sheet-metal and structural components including the main body sheet with aperture
+                pattern, chassis side-sheet variants and internal mounting bracket assemblies.
+              </p>
+              <div class="tags">
+                <span class="tag">SHEET METAL</span>
+                <span class="tag">WELDMENTS</span>
+                <span class="tag">STRUCTURAL DESIGN</span>
+              </div>
+              <div class="project-footer">
+                <span class="project-type">CHASSIS DESIGN</span>
+                <span class="mini-chip">FABRICATION</span>
+              </div>
+            </article>
+
+            <article class="project">
+              <div class="project-num">DESIGN / 04</div>
+              <h4>Precision Machined Components</h4>
+              <p>
+                CAD work covering an 8-way distribution manifold, step fitting cylinder,
+                V-belt transmission pulley and high-load clevis linkage for manufacturing applications.
+              </p>
+              <div class="tags">
+                <span class="tag">CNC MANUFACTURING</span>
+                <span class="tag">MACHINING</span>
+                <span class="tag">MECHANICAL PARTS</span>
+              </div>
+              <div class="project-footer">
+                <span class="project-type">PRECISION COMPONENTS</span>
+                <span class="mini-chip">CNC READY</span>
+              </div>
+            </article>
+
+            <article class="project">
+              <div class="project-num">DESIGN / 05</div>
+              <h4>Complex Modeling & Surfacing</h4>
+              <p>
+                Advanced solid modeling and surface-design work including a protective housing,
+                Revo aerodynamic mold, modular structural frame and slotted ventilation bezel.
+              </p>
+              <div class="tags">
+                <span class="tag">SOLID MODELING</span>
+                <span class="tag">SURFACING</span>
+                <span class="tag">COMPLEX GEOMETRY</span>
+              </div>
+              <div class="project-footer">
+                <span class="project-type">ADVANCED CAD</span>
+                <span class="mini-chip">SURFACE WORK</span>
+              </div>
+            </article>
+
+            <article class="project">
+              <div class="project-num">DESIGN / 06</div>
+              <h4>Technical Design & Documentation</h4>
+              <p>
+                Fully constrained technical sketches, dimensional layouts, CNC-machined part design,
+                engineering title blocks, material specifications, revision history and fabrication guides.
+              </p>
+              <div class="tags">
+                <span class="tag">GD&T</span>
+                <span class="tag">TECHNICAL DRAWING</span>
+                <span class="tag">DOCUMENTATION</span>
+              </div>
+              <div class="project-footer">
+                <span class="project-type">ENGINEERING DOCUMENTS</span>
+                <span class="mini-chip">QUALITY</span>
+              </div>
+            </article>
+
+            <article class="project">
+              <div class="project-num">DESIGN / 07</div>
+              <h4>3D Routing & Wireframe Design</h4>
+              <p>
+                Complex 3D routing paths for hydraulic or pneumatic layouts together with
+                parametric structural wireframes supporting spatial analysis and weldment preparation.
+              </p>
+              <div class="tags">
+                <span class="tag">3D SKETCH</span>
+                <span class="tag">ROUTING</span>
+                <span class="tag">WIREFRAME</span>
+              </div>
+              <div class="project-footer">
+                <span class="project-type">SPATIAL DESIGN</span>
+                <span class="mini-chip">3D LAYOUT</span>
+              </div>
+            </article>
+          </div>
+
+          <div style="display:flex;justify-content:center;margin-top:18px;">
+            <a class="btn btn-primary" href="assets/Wamiq%20Ajmal%20Design_Portfolio.pdf" target="_blank" rel="noopener">
+              View Complete Design Portfolio ↗
+            </a>
+          </div>
+        </section>
+
+        <section id="skills" class="section reveal">
+          <div class="section-head">
+            <div>
+              <p class="section-kicker">03 // Primary Toolset</p>
+              <h3>Technical Capabilities</h3>
+            </div>
+            <div class="section-note">Core areas already represented in the portfolio and CV.</div>
+          </div>
+
+          <div class="skills">
+            <div class="skill-card"><span class="icon">CAD</span><strong>SolidWorks</strong><span>2D drafting, 3D parts and assemblies.</span></div>
+            <div class="skill-card"><span class="icon">3D</span><strong>Creo Parametric</strong><span>Mechanical CAD and parametric modeling.</span></div>
+            <div class="skill-card"><span class="icon">NC</span><strong>CNC Operation</strong><span>Shop-floor exposure to machining operations.</span></div>
+            <div class="skill-card"><span class="icon">G</span><strong>G-Code Fundamentals</strong><span>Programming fundamentals and machining logic.</span></div>
+            <div class="skill-card"><span class="icon">PM</span><strong>Precision Machining</strong><span>Grinding, measurement and controlled machining work.</span></div>
+            <div class="skill-card"><span class="icon">FAB</span><strong>Metal Fabrication</strong><span>Welding, assembly and practical fabrication workflows.</span></div>
+          </div>
+        </section>
+
+        <section id="contact" class="section reveal">
+          <div class="section-head">
+            <div>
+              <p class="section-kicker">04 // Communication Link</p>
+              <h3>Contact & Professional Links</h3>
+            </div>
+            <div class="section-note">For engineering roles, internships, projects and professional communication.</div>
+          </div>
+
+          <div class="contact-grid">
+            <div class="contact-card">
+              <div class="contact-row"><div class="contact-key">LOC</div><div class="contact-value">Peshawar, Pakistan</div></div>
+              <div class="contact-row"><div class="contact-key">TEL</div><div class="contact-value"><a href="tel:+923024233318">03024233318</a></div></div>
+              <div class="contact-row"><div class="contact-key">EMAIL</div><div class="contact-value"><a href="mailto:engrwamiqajmal@gmail.com">engrwamiqajmal@gmail.com</a></div></div>
+              <div class="contact-row"><div class="contact-key">LINKEDIN</div><div class="contact-value"><a href="https://linkedin.com/in/engrwamiqajmal" target="_blank" rel="noopener">linkedin.com/in/engrwamiqajmal ↗</a></div></div>
+              <div class="hero-actions">
+                <a class="btn btn-primary" href="mailto:engrwamiqajmal@gmail.com">Start a Conversation</a>
+                <a class="btn" href="assets/Wamiq_Ajmal_CV.pdf" target="_blank" rel="noopener">Open CV ↗</a>
+              </div>
+            </div>
+
+            <div class="terminal-card">
+              <div><span class="blue">contact@wamiqajmal</span>:~$ whoami</div>
+              <div>Mechanical Engineering Technology professional</div>
+              <div>Focused on design, manufacturing and practical engineering.</div>
+              <br />
+              <div><span class="blue">contact@wamiqajmal</span>:~$ mission</div>
+              <div class="purple">Translate engineering drawings into real, manufacturable work.</div>
+              <br />
+              <div><span class="blue">contact@wamiqajmal</span>:~$ exit</div>
+              <div class="green">Connection ready.</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section reveal" aria-label="Design portfolio document">
+          <div class="section-head">
+            <div>
+              <p class="section-kicker">05 // Design Archive</p>
+              <h3>Full Design Portfolio</h3>
+            </div>
+            <div class="section-note">A separate PDF presentation is available for detailed engineering design work and selected projects.</div>
+          </div>
+          <div class="contact-card" style="display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;">
+            <div>
+              <strong style="font-size:1rem;">Wamiq Ajmal Design Portfolio.pdf</strong>
+              <div style="margin-top:7px;color:var(--muted);font-size:.78rem;">Engineering design portfolio • PDF document</div>
+            </div>
+            <a class="btn btn-primary" href="assets/Wamiq%20Ajmal%20Design_Portfolio.pdf" target="_blank" rel="noopener">View Design Portfolio ↗</a>
+          </div>
+        </section>
+
+        <footer>
+          © <span id="year"></span> Wamiq Ajmal // Mechanical Engineering Technology Portfolio
+        </footer>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // Reliable GitHub Pages version: plain JavaScript + Three.js, no Babel/React compilation step.
+    (function () {
+      const canvas = document.getElementById("three-bg");
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const isSmall = window.innerWidth < 700;
+
+      if (window.THREE && !isSmall) {
+        try {
+          const scene = new THREE.Scene();
+          const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 100);
+          camera.position.z = 22;
+
+          const renderer = new THREE.WebGLRenderer({
+            canvas,
+            antialias: true,
+            alpha: true,
+            powerPreference: "high-performance"
+          });
+          renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+          renderer.setSize(window.innerWidth, window.innerHeight);
+
+          const group = new THREE.Group();
+          scene.add(group);
+
+          const grid = new THREE.GridHelper(46, 26, 0x28446b, 0x14253d);
+          grid.rotation.x = Math.PI / 2.2;
+          grid.position.z = -3;
+          grid.material.transparent = true;
+          grid.material.opacity = 0.20;
+          group.add(grid);
+
+          const points = [];
+          const count = 420;
+          for (let i = 0; i < count; i++) {
+            points.push(
+              (Math.random() - 0.5) * 44,
+              (Math.random() - 0.5) * 24,
+              (Math.random() - 0.5) * 14
+            );
+          }
+
+          const geometry = new THREE.BufferGeometry();
+          geometry.setAttribute("position", new THREE.Float32BufferAttribute(points, 3));
+          const material = new THREE.PointsMaterial({
+            color: 0x65ccff,
+            size: 0.045,
+            transparent: true,
+            opacity: 0.62
+          });
+          const stars = new THREE.Points(geometry, material);
+          scene.add(stars);
+
+          const ringA = new THREE.Mesh(
+            new THREE.RingGeometry(3.9, 4.02, 96),
+            new THREE.MeshBasicMaterial({ color: 0x53d7ff, transparent: true, opacity: 0.12, side: THREE.DoubleSide })
+          );
+          ringA.position.set(-10, 4, -2);
+          scene.add(ringA);
+
+          const ringB = new THREE.Mesh(
+            new THREE.RingGeometry(1.9, 2.02, 72),
+            new THREE.MeshBasicMaterial({ color: 0x9a7cff, transparent: true, opacity: 0.10, side: THREE.DoubleSide })
+          );
+          ringB.position.set(8, -4, -1);
+          scene.add(ringB);
+
+          let mx = 0, my = 0;
+          window.addEventListener("pointermove", function (e) {
+            mx = (e.clientX / window.innerWidth) * 2 - 1;
+            my = (e.clientY / window.innerHeight) * 2 - 1;
+          }, { passive: true });
+
+          function resize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+          }
+          window.addEventListener("resize", resize);
+
+          function animate() {
+            requestAnimationFrame(animate);
+            const speed = reduceMotion ? 0 : 0.00045;
+            stars.rotation.y += speed;
+            grid.rotation.z += speed * 0.5;
+            ringA.rotation.z += speed * 1.3;
+            ringB.rotation.z -= speed * 1.8;
+            group.position.x += (mx * 0.28 - group.position.x) * 0.025;
+            group.position.y += (-my * 0.20 - group.position.y) * 0.025;
+            renderer.render(scene, camera);
+          }
+
+          animate();
+        } catch (error) {
+          canvas.style.display = "none";
+          console.warn("Background animation disabled:", error);
+        }
+      } else {
+        canvas.style.display = "none";
+      }
+    })();
+
+    // Mobile menu
+    const menuBtn = document.getElementById("menuBtn");
+    const nav = document.getElementById("nav");
+    menuBtn.addEventListener("click", function () {
+      const open = nav.classList.toggle("open");
+      menuBtn.setAttribute("aria-expanded", String(open));
+    });
+
+    nav.querySelectorAll("a").forEach(function (link) {
+      link.addEventListener("click", function () {
+        nav.classList.remove("open");
+        menuBtn.setAttribute("aria-expanded", "false");
+      });
+    });
+
+    // Active section highlighting
+    const navLinks = Array.from(nav.querySelectorAll('a[href^="#"]'));
+    const observedSections = navLinks
+      .map(link => document.querySelector(link.getAttribute("href")))
+      .filter(Boolean);
+
+    const observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          navLinks.forEach(link => link.classList.remove("active"));
+          const active = nav.querySelector('a[href="#' + entry.target.id + '"]');
+          if (active) active.classList.add("active");
+        }
+      });
+    }, { rootMargin: "-35% 0px -50% 0px", threshold: 0.01 });
+
+    observedSections.forEach(section => observer.observe(section));
+
+    // Reveal animation
+    const revealObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("show");
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.05 });
+
+    document.querySelectorAll(".reveal").forEach(el => revealObserver.observe(el));
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
